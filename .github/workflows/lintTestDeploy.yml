@@ -1,46 +1,34 @@
-name: Lint, Test and deploy Project
-on: [workflow_dispatch]
+name: Deployment Exercise 2
+on: push
 jobs:
-  Job-lint:
+  lint:
     runs-on: ubuntu-latest
-    steps:
+    steps: 
       - name: Get code
         uses: actions/checkout@v3
-      - name: Install NodeJS
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
       - name: Install dependencies
         run: npm ci
-      - name: Run lint
+      - name: Lint
         run: npm run lint
-  Job-test:
-    needs: job-lint
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Test code
+        run: npm run test
+  deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Get code
         uses: actions/checkout@v3
-      - name: Install NodeJS
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
       - name: Install dependencies
         run: npm ci
-      - name: Run tests
-        run: npm test
-  Job-Deploy:
-    needs: job-test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get code
-        uses: actions/checkout@v3
-      - name: Install NodeJS
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: Install dependencies
-        run: npm ci
-      - name: Build project
+      - name: Build code
         run: npm run build
-      - name: Deploy
-        run: echo "Deploying ..." 
+      - name: Deploy code
+        run: echo "Deploying..."
